@@ -1,0 +1,16 @@
+node_modules
+npm-debug.log
+Dockerfile
+.dockerignore
+.git
+.gitignore
+docker-compose.yml
+package-lock.json
+.env
+.github
+.nyc_output
+.log
+.DS_Store
+.vscode
+.idea
+infra/terraform/terraform.tfstate
