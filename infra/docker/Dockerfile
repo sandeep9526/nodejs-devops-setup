@@ -1,35 +1,29 @@
+# Build stage
 FROM node:22-alpine AS builder
 
-# Create app user and group
-RUN addgroup app && adduser -S -G app app
+WORKDIR /app
 
-WORKDIR /usr/src
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev
 
-# Copy package files and install dependencies as root
-COPY package*.json ./
-RUN npm install
+COPY app.js ./app.js
+COPY src ./src
 
-# Copy rest of the app
-COPY . .
+# Runtime stage
+FROM node:22-alpine AS runtime
 
-# Production stage
-FROM node:22-alpine
+ENV NODE_ENV=production
+ENV PORT=3000
 
-# Create app user and group
-RUN addgroup app && adduser -S -G app app
+WORKDIR /app
 
-# Remove npm and its bundled dependencies
-RUN rm -rf /usr/local/lib/node_modules/npm
+COPY --from=builder --chown=node:node /app/package.json ./package.json
+COPY --from=builder --chown=node:node /app/node_modules ./node_modules
+COPY --from=builder --chown=node:node /app/app.js ./app.js
+COPY --from=builder --chown=node:node /app/src ./src
 
-WORKDIR /usr/src
-
-# Copy installed dependencies from builder
-COPY --from=builder /usr/src/node_modules ./node_modules
-COPY --from=builder /usr/src/package*.json ./
-COPY --from=builder /usr/src/app.js ./
-
-# Switch to non-root user for runtime
-USER app
+USER node
 
 EXPOSE 3000
+
 CMD ["node", "app.js"]
