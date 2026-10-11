@@ -88,7 +88,7 @@ resource "aws_instance" "app" {
     set -euxo pipefail
 
     dnf update -y
-    dnf install -y docker nginx certbot python3-certbot-nginx git
+    dnf install -y docker nginx certbot git
 
     systemctl enable --now docker
     usermod -aG docker ec2-user
