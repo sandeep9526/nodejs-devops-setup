@@ -18,6 +18,9 @@ FROM node:22-alpine
 # Create app user and group
 RUN addgroup app && adduser -S -G app app
 
+# Remove npm and its bundled dependencies
+RUN rm -rf /usr/local/lib/node_modules/npm
+
 WORKDIR /usr/src
 
 # Copy installed dependencies from builder
