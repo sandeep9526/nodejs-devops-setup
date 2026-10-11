@@ -13,6 +13,9 @@ jobs:
   test-and-lint:
     name: Test and lint
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: nodejs-api
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -22,7 +25,7 @@ jobs:
         with:
           node-version: "22"
           cache: npm
-          cache-dependency-path: package-lock.json
+          cache-dependency-path: "**/package-lock.json"
 
       - name: Install dependencies
         run: npm ci
@@ -62,7 +65,7 @@ jobs:
             .
 
       - name: Scan image with Trivy
-        uses: aquasecurity/setup-trivy@0.2.1
+        uses: aquasecurity/trivy-action@v0.28.0
         with:
           image-ref: nodejs-api:ci
           format: table
