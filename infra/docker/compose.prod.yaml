@@ -1,8 +1,47 @@
+
 services:
-  app:
-    container_name: app
-    build:
-      context: .
-      dockerfile: Dockerfile
+  app-blue:
+    image: ghcr.io/sandeep9526/nodejs-devops-setup:${IMAGE_TAG:?IMAGE_TAG must be set}
+    container_name: nodejs-api-blue
+    restart: unless-stopped
+    init: true
+    environment:
+      NODE_ENV: production
+      PORT: 3000
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3001:3000"
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "require('http').get('http://127.0.0.1:3000/health', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    security_opt:
+      - no-new-privileges:true
+
+  app-green:
+    image: ghcr.io/sandeep9526/nodejs-devops-setup:${IMAGE_TAG:?IMAGE_TAG must be set}
+    container_name: nodejs-api-green
+    restart: unless-stopped
+    init: true
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+    ports:
+      - "127.0.0.1:3002:3000"
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "require('http').get('http://127.0.0.1:3000/health', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    security_opt:
+      - no-new-privileges:true

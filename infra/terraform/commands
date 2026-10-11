@@ -1,0 +1,18 @@
+ user_data = <<-EOF
+    #!/bin/bash
+    set -euxo pipefail
+
+    dnf update -y
+    dnf install -y docker nginx certbot python3-certbot-nginx
+
+    systemctl enable --now docker
+    systemctl enable --now nginx
+
+    usermod -aG docker ec2-user
+
+    mkdir -p /opt/nodejs-api
+    mkdir -p /etc/nginx/conf.d
+    mkdir -p /var/www/certbot
+
+    chown ec2-user:ec2-user /opt/nodejs-api
+  EOF

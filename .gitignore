@@ -54,3 +54,22 @@ build/Release
 # Dependency directory
 # https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
 node_modules
+
+
+# Terraform working directory
+**/.terraform/*
+
+# Terraform state (may contain sensitive data)
+*.tfstate
+*.tfstate.*
+
+# Terraform plans
+*.tfplan
+
+# Terraform variable files (may contain secrets)
+*.tfvars
+*.tfvars.json
+
+# Terraform crash logs
+crash.log
+crash.*.log
